@@ -1,39 +1,71 @@
-Create DATABASE TeamBuilder;
+USE light
+GO
+-- DROP TABLE personne;
+-- DROP TABLE equipe;
+-- DROP TABLE equipe_has_personne
+
+CREATE TABLE [personne] (
+  [id] int PRIMARY KEY IDENTITY(1, 1),
+  [nom] varchar(255) NOT NULL,
+  [prenom] varchar(255) NOT NULL
+)
 GO
 
-CREATE TABLE Users
-(
-    Id int PRIMARY KEY IDENTITY(1,1),
-    FirstName nvarchar(50) NOT NULL,
-    LastName nvarchar(50) NOT NULL,
-    Role nvarchar(50) NOT NULL,
-    TeamId int,
-    CONSTRAINT FK_Teams FOREIGN KEY (TeamId) REFERENCES Teams(Id)
-);
+CREATE TABLE [equipe] (
+  [id] int PRIMARY KEY IDENTITY(1, 1),
+  [nom] varchar(255) NOT NULL,
+  [projet] varchar(255) NOT NULL,
+  [personne_id] int
+)
+GO
 
-CREATE TABLE Teams
-(
-    Id int PRIMARY KEY IDENTITY(1,1),
-    Name nvarchar(50) NOT NULL,
-    Project nvarchar(50) NOT NULL
-);
+CREATE TABLE [equipe_has_personne] (
+  [personne_id] int,
+  [equipe_id] int,
+  PRIMARY KEY ([personne_id], [equipe_id])
+)
+GO
 
--- Insert Teams
-INSERT INTO Teams (Name, Project) VALUES 
-('Team A', 'Projet site internet Mairie'),
-('Team B', 'Projet CRM'),
-('Team C', 'Projet ERP');
+ALTER TABLE [equipe] ADD FOREIGN KEY ([personne_id]) REFERENCES [personne] ([id])
+GO
 
--- Insert Users
-INSERT INTO Users (FirstName, LastName, Role, TeamId) VALUES
-('Brad', 'Pitt', 'chef', 1), -- Team A
-('Bruce', 'Willis', 'designer', 1), -- Team A
-('Nicolas', 'Cage', 'designer', 1), -- Team A
+ALTER TABLE [equipe_has_personne] ADD FOREIGN KEY ([equipe_id]) REFERENCES [equipe] ([id])
+GO
 
-('Angelica', 'Jolie', 'chef', 2), -- Team B
-('Tom', 'Cruise', 'designer', 2), -- Team B
-('Tom', 'Hanks', 'designer', 2), -- Team B
+ALTER TABLE [equipe_has_personne] ADD FOREIGN KEY ([personne_id]) REFERENCES [personne] ([id])
+GO
 
-('Bob', 'Dylan', 'chef', 3), -- Team C
-('Johnny', 'Cash', 'designer', 3), -- Team C
-('Jimmy', 'Hendrix', 'designer', 3); -- Team C
+INSERT INTO personne (prenom,nom)
+VALUES 
+('Brad','Pitt'),
+('Bruce','Willis'),
+('Nicolas','Cage'),
+('Angelie','Jolie'),
+('Tom','Cruise'),
+('Tom','Hanks'),
+('Bob','Dylan'),
+('Johnny','Cash'),
+('Jimmy','Hendrix');
+
+INSERT INTO equipe (nom,projet,personne_id) VALUES
+('Team A','Projet site Mairie',1),
+('Team B','Projet CRM',4),
+('Team C','Projet ERP',7);
+
+
+INSERT INTO equipe_has_personne (equipe_id,personne_id)
+VALUES
+(1,2),
+(1,3),
+(2,5),
+(2,6),
+(3,8),
+(3,9);
+
+SELECT *
+FROM equipe
+WHERE id = 1;
+
+
+SELECT *
+FROM equipe;
